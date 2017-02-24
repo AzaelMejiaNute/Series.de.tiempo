@@ -1,0 +1,21 @@
+####################    S&P500     #########################
+install.packages("readxl")
+library(readxl)
+install.packages("foreign")
+require("foreign")
+
+
+sp <- read.csv("C://Users//admin//Downloads//table.csv")
+spst <- data.frame(sp$Close)
+sp.ts <- ts(spst, frequency = 1, start = 1)
+?ts
+plot(sp.ts)
+
+sp5.ts <- ts(spst, frequency = 5)
+sp.d <- decompose(sp5.ts, type = "multiplicative")
+
+plot(sp.d)
+
+plot(sp.d$random)
+plot(sp.d$trend)
+plot(sp.d$seasonal)
