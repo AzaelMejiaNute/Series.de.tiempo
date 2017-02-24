@@ -1,0 +1,29 @@
+#######################      PETROLEO      ##########################
+
+install.packages("readxl")
+library(readxl)
+mxoil <- read_excel("C://Users//Sala-F4//Downloads//petroleo.xlsx")
+oil.ts <- ts(mxoil, frequency = 1, start = 1)
+plot(oil.ts)
+
+oil5.ts = ts(mxoil, frequency = 5)
+oil.dec <- decompose(oil5.ts, type = "additive")
+plot(as.ts(oil.dec$seasonal))  ##devuelve el  valor estacional
+
+plot(oil.dec$seasonal)   ##da lo mismo
+plot(oil.dec$random)     ##componente irregular
+plot(oil.dec$trend)      ##tendencia
+
+plot(oil.dec)
+
+locator() ##localiza las cordenadas
+
+####################    pibMXN     #########################
+pib <- read_excel("C://Users//Sala-F4//Downloads//gdpmexico.xlsx")
+pib.ts <- ts(pib, frequency = 1, start = 1)
+plot(pib.ts)
+
+pib5.ts <- ts(pib, frequency = 5)
+pib.d <- decompose(pib5.ts, type = "multiplicative")
+
+plot(pib.d)
