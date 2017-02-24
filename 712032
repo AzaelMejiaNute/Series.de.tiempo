@@ -1,0 +1,40 @@
+# Series.de.tiempo
+
+
+
+                       ###################    S&P500   #######################
+
+install.packages("foreign")
+install.packages("readxl")
+library (readxl)
+require(readxl)
+spt<-read.csv("C://Users//Sala-F4//Downloads//table.csv")
+sp <- data.frame( spt$Close)
+spo <- data.frame( spt$Open)
+spo.ts <- ts(spo)
+sp.ts<-ts (sp)
+spt.ts <- ts(spt)
+
+install.packages("tseries") 
+require(tseries)
+acf(sp.ts, lag=20, plot=TRUE) 
+acf(sp.ts, plot=TRUE)
+acf(spo.ts, plot =TRUE)
+acf(spt.ts, plot = TRUE)
+
+sp.log<- log(sp.ts)
+kpss.test(sp.log)
+##un valor menor a .05 indica que NO es estacionario
+
+acf(sp.log, lag=20, plot=FALSE)
+acf(sp.log, plot=TRUE)
+
+##### t de Dickey-Fuller aumentada ####
+
+adf.test(sp.log, alternative = "stationary")
+## un valor menor a .05 indica que es estacionario
+## Grafico sinoidal
+
+Box.test(sp.ts)
+
+
