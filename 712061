@@ -19,3 +19,34 @@ plot(sp.d)
 plot(sp.d$random)
 plot(sp.d$trend)
 plot(sp.d$seasonal)
+
+
+######################          Serie de S&P500 (2000-2017)          ##################
+
+install.packages("foreign")
+require(foreign)
+sp <- read.csv("C://Users//Sala-F4//Downloads//table.csv")
+plot(sp$Date, sp$Close)
+
+
+spst <- data.frame(sp$Close)
+sp.ts <- ts(spst, frequency = 1, start = 1)
+?ts
+plot(sp.ts)
+  
+sp5.ts <- ts(spst, frequency = 1000)
+sp.d <- decompose(sp5.ts, type = "multiplicative")
+  
+plot(sp.d)
+  
+plot(sp.d$random)
+plot(sp.d$trend)
+plot(sp.d$seasonal)
+
+locator()
+###420
+  422*5
+sp[2100,]
+  
+#     |  Date    |   Open |  High  | Low   | Close |  Volume    |Adj.Close
+#2100 |2008-10-14| 1009.97| 1044.31| 972.07| 998.01| 8161990400 |   998.01
