@@ -1,0 +1,64 @@
+######################### ejemplo #####################################
+
+install.packages("foreign")#paquete para lectura de excel
+install.packages("readxl")
+require(foreign)
+require(readxl)
+
+
+ba<-read_excel("C://Users//Sala-F3//Downloads//ejemplo.xlsx")
+summary(ba)
+
+vk <- ts(ba, start = c(2012,1), frequency = 6) ##en 6 divide los 12 meses en 6
+plot(vk, xlab = "Periodo de tiempo", ylab = "Ventas en millones", main = "Ventas en millones")
+
+
+vkd <- decompose(vk, "additive")
+
+cycle(vk)  ##indica como acomodo los datos
+
+####Detectando patrón estacional
+
+boxplot(vk~cycle(vk))
+
+par(mfrow = c(1,3))  ## se le asigna tres veriables
+plot(as.ts(vkd$seasonal))
+plot(as.ts(vkd$trend))
+plot(as.ts(vkd$random))
+plot(vkd)
+
+#######Extraer tendencia (Tt) con el metodo loose, funcion(stl)
+vk1.ts <- ts(ba[1:24,1], frequency = 6, start = c(2012,1))#[1:24,1] la serie va de 1 a 24 de paso a 1
+class(vk1.ts)
+
+vk.stl <- stl(vk1.ts, s.window = "periodic")
+names(vk.stl)
+vk.stl
+
+
+vk.tr <-  vk.stl$time.series[,2]  #selecionando tendencia
+vk.tr
+
+
+plot(vk1.ts, col = "blue", main = "Venta en millones de euros", ylab = "Valores de la tendencia", xlab ="Periodo")
+lines(vk.tr, col = "red", ylab = "Tendencia")
+
+monthplot(vk.stl$time.series)
+
+mean(vk.tr) ##observa el valor medio de la tendencia
+summary(vk.tr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
