@@ -1,0 +1,83 @@
+install.packages("foreign")
+require("foreign")
+
+kof <- read.csv("C://Users//admin//Desktop//k.csv")
+
+#$x  [1] 154.3695   $y  [1] 177.3196
+locator()
+154*12
+kof[1848,]
+#        Date   |Open   | High  |  Low  |Close |Volume |Adj.Close
+#1848 07/05/2013| 161.78| 166.05| 161.25| 163.9| 159700|  151.6135
+
+##################   Tendencia al 27 de marzo de 2013     ################################
+kof1.ts <- ts(kof$Close[1:1848], start = 1, frequency = 12) 
+plot(kof1.ts, xlab = "Periodo de tiempo", ylab = "Precio de cierre", main = "Acciones de KOF desde 2006 a 2013")
+
+kof1.d <- decompose(kof1.ts, "additive")
+
+cycle(kof1.ts)  
+
+####Detectando patrón estacional
+
+boxplot(kof1.ts~cycle(kof1.ts))
+
+par(mfrow = c(1,3))  ## se le asigna tres veriables
+plot(as.ts(kof1.d$seasonal))
+plot(as.ts(kof1.d$trend))
+plot(as.ts(kof1.d$random))
+plot(kof1.d)
+
+#######Extraer tendencia (Tt) con el metodo loose, funcion(stl)
+k1.ts <- ts(kof$Close[1:1848], frequency = 384, start = 1)
+plot(k1.ts, xlab = "Periodo de tiempo", ylab = "Precio de cierre", main = "Acciones de KOF desde 2006")
+
+k1.stl <- stl(k1.ts, s.window = "periodic")
+names(k1.stl)
+k1.stl
+384/2
+
+
+k1.tr <-  k1.stl$time.series[,2]  #selecionando tendencia
+k1.tr
+
+
+plot(k1.ts, col = "blue", main = "Accion KOF", ylab = "Valores de la tendencia", xlab ="Periodo")
+lines(k1.tr, col = "red", ylab = "Tendencia")
+
+summary(k1.tr)
+
+#####################################################################
+##################   Tendencia del 27 de marzo de 2013 al 2016   ################################
+kof2.ts <- ts(kof$Close[1848:2755], start = 1, frequency = 12) 
+plot(kof2.ts, xlab = "Periodo de tiempo", ylab = "Precio de cierre", main = "Acciones de KOF desde 2013 a 2016")
+
+kof2.d <- decompose(kof2.ts, "additive")
+
+cycle(kof2.ts)  
+
+####Detectando patrón estacional
+
+boxplot(kof2.ts~cycle(kof2.ts))
+
+par(mfrow = c(1,3))  ## se le asigna tres veriables
+plot(as.ts(kof2.d$seasonal))
+plot(as.ts(kof2.d$trend))
+plot(as.ts(kof2.d$random))
+plot(kof2.d)
+
+#######Extraer tendencia (Tt) con el metodo loose, funcion(stl)
+k2.ts <- ts(kof$Close[1848:2755], frequency = 384, start = 1)
+plot(k2.ts, xlab = "Periodo de tiempo", ylab = "Precio de cierre", main = "Acciones de KOF desde 2006")
+k2.stl <- stl(k2.ts, s.window = "periodic")
+names(k2.stl)
+k2.stl
+
+k2.tr <-  k2.stl$time.series[,2]  #selecionando tendencia
+k2.tr
+
+plot(k2.ts, col = "blue", main = "Acciones KOF", ylab = "Valores de la tendencia", xlab ="Periodo")
+lines(k2.tr, col = "red", ylab = "Tendencia")
+
+summary(k2.tr)
+
