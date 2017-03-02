@@ -1,0 +1,58 @@
+#################### INDICATORS ######################################################
+install.packages("foreign")                                                    
+require(foreign) 
+install.packages("readxl")                                                    
+require(readxl)  
+ind <- read_excel("C://Users//Sala-F4//Downloads//indicators.xlsx")        
+install.packages("forecast")
+require(forecast)
+
+ 
+inde.ts <- ts(ind$gdp_capita)
+ind.ts <- ts(ind$co2)
+
+View(ind.ts)
+plot(ind.ts)
+
+est <- tslm(inde.ts~ind.ts) 
+summary(est)
+
+#Call:
+#  tslm(formula = inde.ts ~ ind.ts)
+
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+#-2866.9  -906.4   206.1   934.8  1988.6 
+
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)    
+#(Intercept) -2.145e+03  3.916e+02  -5.476 1.28e-06 ***
+#  ind.ts       2.119e-02  1.270e-03  16.689  < 2e-16 ***
+  ---
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+#Residual standard error: 1253 on 52 degrees of freedom
+#Multiple R-squared:  0.8427,	Adjusted R-squared:  0.8396 
+#F-statistic: 278.5 on 1 and 52 DF,  p-value: < 2.2e-16
+
+#la r cuadrada es cerca a uno, indica que el modelo es fuerte.
+  
+##############################################
+#Función lineal
+par(mfrow=c(1,2))
+eßt.ts <- lm(log(inde.ts)~log(ind.ts))  
+summary(eßt.ts)  
+plot(jitter(inde.ts)~jitter(ind.ts), xlab ="Toneladas de CO2", ylab = "Gross Domestic Product", type = "p")
+lines(1:54, exp(eßt.ts$coef[1]+eßt.ts$coef[2]*log(1:54)))
+plot(log(jitter(inde.ts))~log(jitter(ind.ts)),  xlab ="log(CO2)", ylab = "log(GDP)")
+abline(eßt.ts, col = "red")
+?plot
+
+###residuos(log-log)
+residuos.log <- residuals(eßt.ts)
+plot(jitter(residuos.log, amount = .005)~ jitter(log(ind.ts)), xlab = "Log(CO2)", ylab = "Residuos", col = "blue")
+
+
+
+
+
