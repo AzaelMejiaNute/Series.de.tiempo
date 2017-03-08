@@ -1,0 +1,39 @@
+####################### MATRIZ ###################################
+matx <- matrix(c(-4000,-2000,-400,-200,-40,-20,-4,-2,2,4,20,40,200,400,2000,4000),4,4)
+                               ##ordena los valores en una matriz de 4x4
+matx
+matx[4,1]                      #muestra el valor de fila 4 columna 1
+matx[,c(2,3)]                  #muestra la columna 2 y 3
+ma <- matrix(c(1,2,3,4,5,6,7,8,9,10),2,5)
+ma
+me <- matrix(c(10,20,30,40),4,1)
+me
+mi<-cbind(matx,me)             #une un par de matrices con columnas
+mi
+mo <- rbind (mi,ma)            #une dos matrices por filas 
+mo
+mu <- rbind(matx[2,], me[2,])  #crea una matriz con los valores de la fila 2 de matx
+                               #y valores de la fila 2 de la matriz me, ppero dado que
+                               #no hay valores en vertical, los repite
+mu
+matx
+
+############################################################################################
+
+getwd()   #visualiza dónde se está guardando el documento 
+setwd("C://Users//Sala-F4//Documents")
+install.packages("foreign")
+require(foreign)
+dat <- read.dta("C://Users//Sala-F4//Downloads//clase1.dta")
+daet <- read.dta("C://Users//Sala-F4//Downloads//clase2.dta")
+
+head(dat)           ##muestra el encabezado
+colnames(dat)       ##nos da el nombre de las variables
+dat[3,5]
+dat[1:20, "edad"]   #muestra un listado de 1 a 20 de la variable edad
+dat[c(1,5,7),2]     #muestra los valores de la fila 1 5 7 de la variable 2
+
+colnames(dat)[2] <- "ingreso"     ##renombra el valor de la columna 2
+colnames(dat)
+
+summary(dat)
