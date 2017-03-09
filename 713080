@@ -1,0 +1,37 @@
+###############continuacion de la anterior
+#extraer tendencia con el metodo loess, funcion (stl)
+cons.ts <- ts(cons[1:56,1], frequency = 12, start = c(1910,1), end = c(1915,8))
+class(cons.ts)
+View(cons.ts)
+cycle(cons.ts)
+con.stl <- stl(cons.ts, s.window = "periodic", robust = T)
+names(con.stl)
+con.stl
+
+co.tend <- con.stl$time.series[1:56,2]  ##para evitar la duplicacion de datos [1:56]
+co.tend
+
+plot(con.ts, col = "blue", main = "Consumo de productos", ylab = "Tendencia", xlab = "Periodo")
+lines(con.stl$time.series[,2], col = "red", ylab = "Tendencia")
+
+######eliminar tendencia
+##se elimina la tendencia para analizar los componentes estacionales de una serie, 
+#en cambio puede causar ruido
+co.nt <- con.ts-con.dc$trend
+
+
+plot(co.nt, col = "blue")
+par(mfrow = c(1,2))
+plot(con.ts, col = "blue")
+plot(co.nt, col = "red")
+
+
+###ajuste estacional
+
+install.packages("fpp")
+require(fpp)
+
+monthplot(con.stl$time.series[1:56, "seasonal"], main = "Componente estacional por meses", ylab = "Componente estacional")
+
+
+plot(con.ts, col = "black", main = "Ajuste estacional", xlab = "Periodo", ylab = "Indice estacional")
