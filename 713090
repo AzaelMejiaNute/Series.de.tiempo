@@ -1,0 +1,33 @@
+#################################   Desestacionalizar   ############################################
+##Se consideran factores exogenos al desestacionar una serie de tiempo                             #
+##la ventaja de un modelo no parametrico las fluctuaciones estacionales pueden ser parte del modelo#
+##de los censos de eeuu y canada está arima x11                                                    #
+####################################################################################################
+###################################  Promedios móviles  ############################################
+
+install.packages("fpp")
+require(fpp)
+
+?ma
+require(readxl)
+
+ve <- read_excel("C://Users//Sala-F4//Downloads//ma_r.xlsx")
+v <- ts(ve, start = c(1990,1))
+
+a <- ma(v, order = 5)
+aa <- ma(v, order = 8)
+aaa <- ma(v, order = 13)
+plot(v, main = "Ventas de empresa X", ylab = "Toneladas", xlab = "Año")
+lines(a, col ="green")
+lines(aa, col = "red")
+lines(aaa, col = "blue")
+View(v)
+
+
+###########     promedios moviles centrados       #################
+v2 <- window(v, start = 1990)
+m4 <- ma(v2, order = 4, centre = FALSE)
+m42 <- ma(v2, order = 4, centre =TRUE)
+plot(v2, main = "Ventas de empresa X", ylab = "Toneladas", xlab = "Año")
+lines(m4, col ="green")
+lines(m42, col = "red")
