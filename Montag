@@ -1,0 +1,379 @@
+---
+title: "Tarea 1 Dulce Silva"
+author: "Dulce Margarita Silva Barrera"
+date: "5 de marzo de 2017"
+output: word_document
+---
+###EJERCICIO 1
+##MODELO DE LA ESTACIONALIDAD Con datos mensuales de "AirPassengers", desde 1949.01 - 1960.12
+DUMMYS (MODELO MULTIPLICATIVO)
+```{r}
+library(forecast)
+data(AirPassengers)
+ap=AirPassengers
+
+t=seq(1,length(ap))
+
+M1=lm(ap~t)
+summary(M1)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 85% de confianza.
+
+MF=M1$fitted.values
+plot(ap)
+lines(ts(MF,start=c(1949.01),freq=12),col="#1D66C4")
+#La gráfica que representa la serie de tiempo con datos mensuales de las aerolíneas de Estados Unidos desde 1949.01 - 1960.12 muestra una tendencia creciente positiva con una estacionalidad constante durante 1949 a 1952, y con un ligero cambio temporal después de ese año, debido al cambio tecnológico implementado por las aerolíneas y por el acelerado crecimiento de la población. 
+
+It=seasonaldummy(ap)
+
+M2=lm(ap~t+It)
+summary(M2)
+#La constante, la variable tiempo y ocho de las variables dummys (a excepción de las de los meses jan,feb & oct) son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 95% de confianza.
+
+MF2=M2$fitted.values
+plot(ap)
+lines(ts(MF2,start=c(1949.01),freq=12),col="#F01A25")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección positiva y creciente de la tendencia de la serie.
+```
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos mensuales de "AirPassengers", desde 1949.01 - 1960.12
+DUMMYS (MODELO ADITIVO)
+```{r}
+library(forecast)
+log(AirPassengers)
+#A los datos mensuales de las aerolíneas de Estados Unidos desde 1949.01 - 1960.12, se les aplicó logaritmo, con el propósito de convertir el modelo de dummys multiplicativo, a uno aditivo.
+data(log(AirPassengers))
+ap1=log(AirPassengers)
+
+t1=seq(1,length(ap1))
+
+M11=lm(ap1~t1)
+summary(M11)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 90% de confianza.
+
+MFF=M11$fitted.values
+plot(ap1)
+lines(ts(MFF,start=c(1949.01),freq=12),col="#1D66C4")
+#La gráfica que representa la serie de tiempo con datos logaritmicos mensuales de las aerolíneas de Estados Unidos desde 1949.01 - 1960.12 muestra una tendencia creciente positiva con una estacionalidad constante durante 1949 a 1952, y con un ligero cambio temporal después de ese año, debido al cambio tecnológico implementado por las aerolíneas y por el acelerado crecimiento de la población.
+
+It1=seasonaldummy(ap1)
+
+M22=lm(ap1~t1+It1)
+summary(M22)
+#La constante, la variable tiempo y ocho de las variables dummys (a excepción de las de los meses jan,feb & oct) son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 98% de confianza.
+
+MFF2=M22$fitted.values
+plot(ap1)
+lines(ts(MFF2,start=c(1949.01),freq=12),col="#F01A25")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección positiva y creciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+###EJERCICIO 2
+##MODELO DE LA ESTACIONALIDAD con datos trimestrales del "ITAEE", desde 2004.01 - 2016.03
+DUMMYS (MODELO MULTIPLICATIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/NL.csv"
+NL=read.csv(file=Archivo,header=T)
+
+NLS=ts(NL,start=c(2004.01),freq=04)
+
+tNL=seq(1,length(NLS))
+
+MNL=lm(NLS~tNL)
+summary(MNL)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, pero el modelo es de apenas 25% de confianza.
+
+NLF=MNL$fitted.values
+plot(NLS)
+lines(ts(NLF,start=(2004.01),freq=04),col="#CF9FB8")
+#La gráfica que representa la serie de tiempo con datos trimestrales de la actividad económica de Nuevo León desde 2004.01 - 2016.03 muestra una tendencia creciente positiva y cambios temporales irregulares y continuos.  
+
+INL=seasonaldummy(NLS)
+
+MNL2=lm(NLS~tNL+INL)
+summary(MNL2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, las tres variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad pero el modelo es de apenas el 34% de confianza.
+
+NLF2=MNL2$fitted.values
+plot(NLS)
+lines(ts(NLF2,start=(2004.01),freq=04),col="#CF9FB8")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección positiva y creciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos trimestrales del "ITAEE", desde 2004.01 - 2016.03
+DUMMYS (MODELO ADITIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/NL.csv"
+logNL=(log(read.csv(file=Archivo,header=T)))
+
+logNLS=ts(logNL,start=c(2004.01),freq=04)
+
+tlogNL=seq(1,length(logNLS))
+
+MlogNL=lm(logNLS~tlogNL)
+summary(MlogNL)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, pero el modelo es de apenas 26% de confianza.
+
+logNLF=MlogNL$fitted.values
+plot(logNLS)
+lines(ts(logNLF,start=(2004.01),freq=04),col="#CF9FB8")
+#La gráfica que representa la serie de tiempo con datos logaritmicos trimestrales de la actividad económica de Nuevo León desde 2004.01 - 2016.03 muestra una tendencia creciente positiva y cambios temporales irregulares y continuos.
+
+IlogNL=seasonaldummy(logNLS)
+
+MlogNL2=lm(logNLS~tlogNL+IlogNL)
+summary(MlogNL2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, las tres variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad pero el modelo es de apenas el 34% de confianza.
+
+logNLF2=MlogNL2$fitted.values
+plot(logNLS)
+lines(ts(logNLF2,start=(2004.01),freq=04),col="#CF9FB8")
+#El modelo logaritmico estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección positiva y creciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos mensuales de "INEGI", desde 2006.01 - 2014.08
+DUMMYS (MODELO MULTIPLICATIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/HOTELERA.csv"
+HT=read.csv(file=Archivo,header=T)
+
+HTS=ts(HT,start=c(2006.01),freq=12)
+
+tHT=seq(1,length(HTS))
+
+MHT=lm(HTS~tHT)
+summary(MHT)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, pero el modelo es de solo 16% de confianza.
+
+HTF=MHT$fitted.values
+plot(HTS)
+lines(ts(HTF,start=(2006.01),freq=12),col="#CF9FB8")
+#La gráfica que representa la serie de tiempo con datos mensuales del índice de ocupación hotelera en México, desde 2006.01 - 2014.08 muestra una tendencia decreciente, muy probablemente debido a la crisis presentada a finales del 2008, pues claramente a partir de ese entonces, se presenta una baja en la ocupación hotelera en el país.
+
+IHT=seasonaldummy(HTS)
+
+MHT2=lm(HTS~tHT+IHT)
+summary(MHT2)
+#La constante, la variable tiempo y solo dos de las variables con dummys son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 39% de confianza.
+
+HTF2=MHT2$fitted.values
+plot(HTS)
+lines(ts(HTF2,start=(2006.01),freq=12),col="#CF9FB8")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección decreciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos mensuales de "INEGI", desde 2006.01 - 2014.08
+DUMMYS (MODELO ADITIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/HOTELERA.csv"
+logHT=(log(read.csv(file=Archivo,header=T)))
+
+logHTS=ts(logHT,start=c(2006.01),freq=12)
+
+tlogHT=seq(1,length(logHTS))
+
+MlogHT=lm(logHTS~tlogHT)
+summary(MlogHT)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, pero el modelo es de solo 14% de confianza.
+
+logHTF=MlogHT$fitted.values
+plot(logHTS)
+lines(ts(logHTF,start=(2006.01),freq=12),col="#CF9FB8")
+#La gráfica que representa la serie de tiempo con datos logaritmicos mensuales del índice de ocupación hotelera en México, desde 2006.01 - 2014.08 muestra una tendencia decreciente, muy probablemente debido a la crisis presentada a finales del 2008, pues claramente a partir de ese entonces, se presenta una baja en la ocupación hotelera en el país.
+
+IlogHT=seasonaldummy(logHTS)
+
+MlogHT2=lm(logHTS~tlogHT+IlogHT)
+summary(MlogHT2)
+#La constante, la variable tiempo y solo dos de las variables con dummys son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad y el modelo es del 37% de confianza.
+
+logHTF2=MlogHT2$fitted.values
+plot(logHTS)
+lines(ts(logHTF2,start=(2006.01),freq=12),col="#CF9FB8")
+#El modelo logaritmico estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la dirección decreciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos semanales de "finance.yahoo", desde 2000.01 - 2017.09
+DUMMYS (MODELO MULTIPLICATIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/SONY.csv"
+SN=read.csv(file=Archivo,header=T)
+
+SNS=ts(SN,start=c(2000.01),freq=52)
+
+tSN=seq(1,length(SNS))
+
+MSN=lm(SNS~tSN)
+summary(MSN)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, pero el modelo es de solo 30% de confianza.
+
+SNF=MSN$fitted.values
+plot(SNS)
+lines(ts(SNF,start=(2000.01),freq=52),col="#CF9FB8")
+#La gráfica que representa la serie de tiempo con datos semanales del cierre de ingresos de SONY, desde 2000.01 - 2017.09 muestra una tendencia ligeramente creciente debido a las asociaciones estratégicas que la empresa ha llevado a cabo en los últimos años.
+
+ISN=seasonaldummy(SNS)
+
+MSN2=lm(SNS~tSN+ISN)
+summary(MSN2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, mientras que las variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad aunque el modelo solo sea del 33% de confianza.
+
+SNF2=MSN2$fitted.values
+plot(SNS)
+lines(ts(SNF2,start=(2000.01),freq=52),col="#CF9FB8")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la ligera dirección creciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos semanales de "finance.yahoo", desde 2000.01 - 2017.09
+DUMMYS (MODELO ADITIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/SONY.csv"
+logSN=(log(read.csv(file=Archivo,header=T)))
+
+logSNS=ts(logSN,start=c(2000.01),freq=52)
+
+tlogSN=seq(1,length(logSNS))
+
+MlogSN=lm(logSNS~tlogSN)
+summary(MlogSN)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, y el modelo es 52% de confianza.
+
+MFlogSN=MlogSN$fitted.values
+plot(logSNS)
+lines(ts(MFlogSN,start=c(2000.01),freq=52),col="#1D66C4")
+#La gráfica que representa la serie de tiempo con datos logaritmicos semanales del cierre de ingresos de SONY, desde 2000.01 - 2017.09 muestra una tendencia ligeramente creciente debido a las asociaciones estratégicas que la empresa ha llevado a cabo en los últimos años.
+
+IlogSN=seasonaldummy(logSNS)
+
+MlogSN2=lm(logSNS~tlogSN+IlogSN)
+summary(MlogSN2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, mientras que las variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad aunque el modelo solo sea del 53% de confianza.
+
+logSNF2=MlogSN2$fitted.values
+plot(logSNS)
+lines(ts(logSNF2,start=(2000.01),freq=52),col="#CF9FB8")
+#El modelo logaritmico estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la ligera dirección creciente de la tendencia de la serie.
+```
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos mensuales de "finance.yahoo", desde 2000.01 - 2017.03
+DUMMYS (MODELO MULTIPLICATIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/TELEVISA.csv"
+TV=read.csv(file=Archivo,header=T)
+
+TVS=ts(TV,start=c(2000.01),freq=12)
+
+tTV=seq(1,length(TVS))
+
+MTV=lm(TVS~tTV)
+summary(MTV)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, y el modelo es 25% de confianza.
+
+MFTV=MTV$fitted.values
+plot(TVS)
+lines(ts(MFTV,start=c(2000.01),freq=12),col="#1D66C4")
+#La gráfica que representa la serie de tiempo con datos mensuales del cierre de ingresos de TELEVISA, desde 2000.01 - 2017.09 muestra una tendencia ligeramente creciente, a pesar de los cambios temporales continuos e irregulares.
+
+ITV=seasonaldummy(TVS)
+
+MTV2=lm(TVS~tTV+ITV)
+summary(MTV2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, mientras que las variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad aunque el modelo solo sea del 25% de confianza.
+
+TVF2=MTV2$fitted.values
+plot(TVS)
+lines(ts(TVF2,start=(2000.01),freq=12),col="#CF9FB8")
+#El modelo estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la ligera dirección creciente de la tendencia de la serie, eliminando las irregularidades de la misma.
+```
+
+
+
+
+
+
+
+
+##MODELO DE LA ESTACIONALIDAD con datos mensuales de "finance.yahoo", desde 2000.01 - 2017.03
+DUMMYS (MODELO ADITIVO)
+```{r}
+library(forecast)
+Archivo="E:/6SEMESTRE/SERIESDETIEMPO/~Rclase/TELEVISA.csv"
+logTV=(log(read.csv(file=Archivo,header=T)))
+
+logTVS=ts(logTV,start=c(2000.01),freq=12)
+
+tlogTV=seq(1,length(logTVS))
+
+MlogTV=lm(logTVS~tlogTV)
+summary(MlogTV)
+#La constante y la variable tiempo son estadísticamente significativas, la prueba cumple con el supuesto de homocedasticidad, y el modelo es 23% de confianza.
+
+MFlogTV=MlogTV$fitted.values
+plot(logTVS)
+lines(ts(MFlogTV,start=c(2000.01),freq=12),col="#1D66C4")
+#La gráfica que representa la serie de tiempo con datos logaritmicos mensuales del cierre de ingresos de TELEVISA, desde 2000.01 - 2017.09 muestra una tendencia ligeramente creciente, a pesar de los cambios temporales continuos e irregulares.
+
+IlogTV=seasonaldummy(logTVS)
+
+MlogTV2=lm(logTVS~tlogTV+IlogTV)
+summary(MlogTV2)
+#Solo la constante y la variable tiempo son estadísticamente significativas, mientras que las variables con dummys no lo son. La prueba cumple con el supuesto de homocedasticidad aunque el modelo solo sea del 24% de confianza.
+
+logTVF2=MlogTV2$fitted.values
+plot(logTVS)
+lines(ts(logTVF2,start=(2000.01),freq=12),col="#CF9FB8")
+#El modelo logaritmico estimado con dummys para la serie de tiempo supone un suavizamiento de la estacionalidad de los datos, dejando observar claramente una estacionalidad que la serie original no muestra. Al mismo tiempo, la estimación esclarece la ligera dirección creciente de la tendencia de la serie, eliminando las irregularidades de la misma.
+```
