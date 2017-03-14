@@ -24,3 +24,20 @@ gdp$y
 par(mfrow = c(2,1))
 plot(ts(gdp$y))
 plot(ts(dp), col = "red")
+  #################################################################3
+install.packages("readxl")
+require(readxl)
+dat <- read.csv("C://Users//admin//Desktop//data2.csv")
+da <- data.frame(dat[1:252,])
+cor(da)
+?cor
+plot(ts(dat$INPC))
+plot(ts(dat$Inflaci.n))
+plot(ts(dat$Tasa.de.inter.s))
+plot(ts(dat$Tipo.de.cambio))
+plot(ts(dat$Balanza.Comercial.TSM..miles.de.d.lares))
+plot(ts(dat$Deuda.externa.Bruta.del.sector.p.blico.mdd))
+plot(ts(dat$Total.de.exportaciones.petroleras.y.no.petroleras..Mdd))
+plot(ts(dat$PIB08.TSM..mp))
+plot(ts(dat$MME.USD.))
+
