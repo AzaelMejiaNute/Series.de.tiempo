@@ -1,0 +1,15 @@
+install.packages("foreign")
+install.packages("akima")
+require(foreign)
+require(akima)
+bal <- read.csv("C://Users//admin//Desktop//balanza.csv")
+p <- c(as.numeric(bal$Balanza.de.pagos.de.M.xico..3...Cuenta.corriente))
+t <- seq(1, 252, 3)
+t
+s <- spline(t, p)
+?interp
+a<-1:252
+#interp(s$x, s$y, a)
+#s
+plot(ts(bal$Balanza.de.pagos.de.M.xico..3...Cuenta.corriente))
+plot(ts(s$y))
