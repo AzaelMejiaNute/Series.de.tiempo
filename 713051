@@ -1,0 +1,35 @@
+##################################################################################################
+###################################        Pronósticos        ####################################
+##################################################################################################
+
+install.packages("foreign")
+require(foreign)
+install.packages("forecast")
+require(forecast)
+install.packages("readxl")
+require(readxl)
+install.packages("fpp")
+require(fpp)
+
+inp <- read_excel("C://Users//Sala-F4//Downloads//ipc.xlsx")
+cons <- read_excel("C://Users//Sala-F4//Downloads//ejemplo3.xlsx")
+
+c.ts <- ts(cons, start = c(2010,1), frequency = 12)
+plot(c.ts, xlab = "Tiempo", ylab = "ventas en millones", main = "Serie temporal")
+ 
+#########################        Método de la media       #######################################
+?meanf
+
+meanf(c.ts,h = 10)
+summary(cons)
+
+#########################        Método del ingenuo       #######################################
+?naive
+naive(c.ts, h=10)
+##el ingenuo estacional. implica que la serie tiene estacionalidad.
+snaive(c.ts, h = 10)
+
+#########################         Método de deriva        #######################################
+
+?rwf
+rwf(c.ts, h = 10, drift = TRUE) # los mismo que naive
