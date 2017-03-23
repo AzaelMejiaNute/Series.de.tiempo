@@ -1,0 +1,41 @@
+########################################################################################################
+################################             PRONÓSTICOS           #####################################
+########################################################################################################
+###########################################  Apunte  ##################################################
+#Bajo un modelo lineal: ý= ß0+ ß1x  ;x valor predictor, ý valor estimado de y
+#Asumiendo que los errores de regresion ei se distribuyen normalmente  y~N(M, s2), un intervalo al pronostico
+#aproximado al 95 % está dado por ý+-(1.96*Se*radix(1+(1/N)+((x-M)2/(N-1)S2))
+#N= total de observaciones
+#M= es la media de los valores observados de x
+#Sx= desviacion estamdar de los valores observados de y
+#Se= Error estandar expresado como   Se=radix(Suma(ei2)/(N-1))
+#80% z= 1.28
+#90% z= 1.64
+#95% z= 1.96
+#99% z= 2.58
+#Para serie de tiempo ýt+-1.96Sigma
+######################################################################################################
+require(readxl)
+require(forecast)
+
+bas <- read_excel("C://Users//Sala-F4//Downloads//base (1).xlsx")
+ton <- read_excel("C://Users//Sala-F4//Downloads//toneladas.xlsx")
+
+plot(jitter(bas$consumo)~jitter(bas$ingresos), xlab = "ingresos", ylab = "Consumo")
+est <- lm(consumo~ingresos, data = bas)
+abline(est, col = "red")
+summary(est)
+###################################           residuos         ########################################
+res <- residuals(est)
+plot(jitter(res)~jitter(bas$ingresos), ylab = "Residuos", xlab = "Ingresos")
+abline(0,0, col = "red")
+##########################           pronósticos con regresión        ##################################
+fitted(est)[1]
+pro <- forecast(est, newdata = data.frame(ingresos=2000))
+plot(pro, xlab = "Ingresos", ylab = "Consumo")
+#########################                    LOG LOG              #############################
+est.l <- lm(log(consumo)~log(ingresos), data = bas)
+plot(est.l)
+
+
+
