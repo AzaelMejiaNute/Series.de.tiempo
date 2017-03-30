@@ -1,0 +1,32 @@
+########################################################################################################
+################################              REGRESIÓN            #####################################
+########################################################################################################
+#########
+require(forecast)
+require(readxl)
+#b <- read_excel("C://Users//Sala-F4//Downloads//multiple.xlsx")
+a <- read_excel("C://Users//Sala-F4//Downloads//base (1).xlsx")
+###############################        Serie de tiempo       ###########################################
+#####
+i <- ts(a)
+View(i)
+plot(i)
+r <- tslm(consumo ~ ingresos, data = i)   #tslm para regresión con series de tiempo
+summary(r)
+############################# Prónosticos basados en escenarios ########################################
+#####
+## incrementos porcentuales ##
+p1p <- forecast(r, newdata = data.frame(ingresos = c(-1, 1)))
+summary(p1p)
+plot(p1p)
+############################# Prónosticos basados en escenarios2 #######################################
+#####
+t <- read_excel("C://Users//Sala-F4//Downloads//toneladas.xlsx")
+ts <- ts(t)
+plot(ts)
+pro <- tslm(ts~trend)
+plot(pro)
+prop <- forecast(pro, h=15)
+plot(prop)
+lines(fitted(prop), col = "Blue")
+summary(prop)
