@@ -1,0 +1,66 @@
+install.packages("readxl")
+require(readxl)
+install.packages("forecast")
+require(forecast)
+inpc<-read_excel("C://Users//SALA-E//Downloads//INPC.xlsx")
+inpc1<-ts(inpc$INPC,frequency =12, start = c(1982,1))
+inpc1sub<-ts(inpc$SUBYA,frequency =12, start = c(1982,1))
+inpc1nosub<-ts(inpc$NOSUBYA,frequency =12, start = c(1982,1))
+View(inpc1)
+
+plot(inpc1, xlab="Año", ylab="INPC", main="Serie de Tiempo del Indice Nacional de Precios al Consumidor: 1982-2017")
+lines(inpc1sub, col="red")
+lines(inpc1nosub, col="purple")
+#Descomposicion de la serie inpc
+inpcd<-decompose(inpc1,"multiplicative")
+cycle(inpc1) 
+boxplot(inpc1~cycle(inpc1))  
+#Descomposicion de la serie inpc sub
+inpcdsub<-decompose(inpc1sub,"multiplicative")
+cycle(inpc1sub) 
+boxplot(inpc1sub~cycle(inpc1sub))  
+#Descomposicion de la serie inpc no sub
+inpcdnosub<-decompose(inpc1nosub,"multiplicative")
+cycle(inpc1nosub) 
+boxplot(inpc1nosub~cycle(inpc1sub))  
+
+#Pronostico usando NAIVE
+snaive(inpc1,h=12)
+#Metodo de la deriva
+rwf(inpc1,h=12,drift=TRUE)
+#metodo de la media
+meanf(inpc1,h=12)
+
+
+plot(inpcd$random, xlab = "Año", ylab= "Variaciòn", main = "Variacion")
+
+
+install.packages("tseries") ## para encontrar estadisticos de estacionalidad  
+require(tseries)
+
+acf(inpc1, lag=20, plot=FALSE) #lag para obtener los primeros 20 retrasos
+acf(inpc1, plot=TRUE)
+inpc1.log<- log(inpc1) #haciendo logaritmica nuestra serie de tiempo
+#####  Kpss  #####
+
+kpss.test(inpc1.log)
+##un valor menor a .05 indica que NO es estacionario
+##con kpss.test nos da p-value= 0.01 < 0.05 por lo que la serie no es estacionaria
+
+##### t de Dickey-Fuller aumentada ####
+
+adf.test(inpc1.log, alternative = "stationary")
+## un valor menor a .05 indica que es estacionario
+##El estadistico Dickey fuller nos da un p-value de 0.3196>0.05 por lo que no es estacionaria.
+
+#Holt: exponenciado doble
+#Método propicio para pronosticar datos con tendencia pero sin estacionalidad.
+
+
+ipc1 <- holt(inpc1,h=7)
+ipc1
+
+plot(ipc1, type="l", ylab="Suavizado Método de Holt", xlab="Año", main="Pronosticos por método Holt", plot.conf=FALSE)
+lines(inpc1, col = "red")
+lines(fitted(ipc1), col="blue")
+lines(ipc1$mean, col="blue", type="l")
