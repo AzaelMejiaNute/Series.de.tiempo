@@ -1,0 +1,445 @@
+
+#############################################################################
+install.packages("fpp")
+library(fpp)
+
+###ARIMA estacionalidad. Ejemplo 1
+library(readxl)
+estacional1 <- read_excel("C://Users//Sala-F26//Downloads//arima_est1.xlsx")
+estacional1.ts <- ts(estacional1, start= c(2000, 1), frequency=12)
+plot(estacional1.ts, col="6")
+###Observando la gráfica, no se identifica tendencia ni componentes estacionales
+
+###Función auto.arima
+#Modelo a estimar sin estacionalidad empleando la función auto.arima
+#Note que al incluir la opción "seasonal" indicamos que es falsa, es decir,
+#Yt no tiene componentes estacionales.
+estacional1.arima <- auto.arima(estacional1.ts, seasonal=FALSE)
+
+#Gráfico y resumen de pronósticos
+windows()
+plot(forecast(estacional1.arima, h=10), include=80)
+summary(forecast(estacional1.arima))
+#Es importante que comparen los resultados del valor de los pronósticos con,
+#un método de pronóstico revisado con anterioridad.
+
+#Gráficos acf y pacf. Probamos la estacionariedad del modelo sólo como forma de verificar
+par(mfrow=c(1,2))
+Acf(estacional1.ts, main="Función de autocorrelación")
+Pacf(estacional1.ts, main="Función de autocorrelación parcial")
+#Los resultados indican que el modelo estimado es estacionario.
+#Se trata de un modelo de Ruido Blanco. En la clase del 05-25-2017 veremos la forma
+#de verificarlo gráficamente.
+tsdisplay(estacional1.ts)
+
+###Ejemplo 2. 
+library(readxl)
+estacional2 <- read_excel("C://Users//Sala-F26//Downloads//arima_est2.xlsx")
+estacional2.ts <- ts(estacional2[,1], start= c(2000, 1), frequency=12)
+plot(estacional2.ts, col="4")
+#La serie muestra tendencia y puede ser ¿componentes estacionales?
+
+#Ajustamos el "mejor modelo" al proceso con la función ARIMA
+#note que nos mantenemos bajo un proceso sin estacionalidad.
+estacional2.arima <- auto.arima(estacional2.ts, seasonal=FALSE)
+windows()
+plot(forecast(estacional2.arima, h=10), include=80)
+summary(forecast(estacional2.arima))
+
+#Probamos mediante ACF y PACF la estacionariedad del modelo.
+par(mfrow=c(1,2))
+Acf(estacional2.ts[,1], main="Función de autocorrelación")
+Pacf(estacional2.ts[,1], main="Función de autocorrelación parcial")
+#Observamos que no es un modelo estacionario.
+#¿Qué procedimiento debemos realizar?
+
+tsdisplay(estacional2.ts)
+######################
+
+####################################################################################################
+install.packages("forecast")
+library(forecast)
+
+help(arima)
+
+library(readxl)
+
+ejemplo1 <- read_excel("F://clases//time-series//clases//data//ar1.xlsx")
+ejemplo1.ts <- ts(ejemplo1)
+
+fit1 <- arima(ejemplo1.ts[,1], order=c(1,0,0))
+fit2 <- arima(ejemplo1.ts[,1], order=c(2,0,0))
+fit3 <- arima(ejemplo1.ts[,1], order=c(3,0,0))
+
+par(mfrow=c(1,3))
+plot(forecast(fit1))
+plot(forecast(fit2))
+plot(forecast(fit3))
+
+summary(fit1)
+summary(fit2)
+summary(fit3)
+
+
+ejemplo2 <- read_excel("F://clases//time-series//clases//data//ar2.xlsx")
+ejemplo2.ts <- ts(ejemplo2)
+
+fit4 <- Arima(diff(ejemplo2.ts), order=c(1,0,0))
+fit5 <- Arima(diff(ejemplo2.ts), order=c(2,0,0))
+fit6 <- Arima(diff(ejemplo2.ts), order=c(3,0,0))
+
+par(mfrow=c(1,3))
+plot(forecast(fit4))
+plot(forecast(fit5))
+plot(forecast(fit6))
+
+summary(fit4)
+summary(fit5)
+summary(fit6)
+
+#############################################################################
+###Simulando procesos AR(1) y MA(1)
+
+### AR(1)
+par(mfrow= c(1,2))
+arsim1 <- arima.sim(list(order = c(1,0,0), ar = 0.7), n = 100)
+plot(arsim1, col=1)
+
+arsim2 <- arima.sim(list(order = c(1,0,0), ar = -0.7), n = 100)
+plot(arsim2, col=2)
+
+arsim3 <- arima.sim(list(order = c(1,0,0), ar = 0.35), n = 200)
+plot(arsim3, col=3)
+
+arsim4 <- arima.sim(list(order = c(1,0,0), ar = -0.35), n = 200)
+plot(arsim4, col=4)
+
+### MA(1)
+par(mfrow= c(1,2))
+masim5 <- arima.sim(list(order = c(0,0,1), ma = 0.7), n = 100)
+plot(masim5, col=1)
+
+masim6 <- arima.sim(list(order = c(0,0,1), ma = -0.7), n = 100)
+plot(masim6, col=2)
+
+masim7 <- arima.sim(list(order = c(0,0,1), ma = 0.35), n = 200)
+ts.plot(masim7, col=3)
+
+masim8 <- arima.sim(list(order = c(0,0,1), ma = -0.35), n = 200)
+ts.plot(masim8, col=4)
+
+
+adf.test(arsim1)
+kpss.test(arsim1)
+###############################################3
+
+#############################################################################
+###Simulando procesos AR(1) y MA(1)
+
+### AR(1)
+par(mfrow= c(1,2))
+arsim1 <- arima.sim(list(order = c(1,0,0), ar = 0.7), n = 100)
+plot(arsim1, col=1)
+
+arsim2 <- arima.sim(list(order = c(1,0,0), ar = -0.7), n = 100)
+plot(arsim2, col=2)
+
+arsim3 <- arima.sim(list(order = c(1,0,0), ar = 0.35), n = 200)
+plot(arsim3, col=3)
+
+arsim4 <- arima.sim(list(order = c(1,0,0), ar = -0.35), n = 200)
+plot(arsim4, col=4)
+
+### MA(1)
+par(mfrow= c(1,2))
+masim5 <- arima.sim(list(order = c(0,0,1), ma = 0.7), n = 100)
+plot(masim5, col=1)
+
+masim6 <- arima.sim(list(order = c(0,0,1), ma = -0.7), n = 100)
+plot(masim6, col=2)
+
+masim7 <- arima.sim(list(order = c(0,0,1), ma = 0.35), n = 200)
+ts.plot(masim7, col=3)
+
+masim8 <- arima.sim(list(order = c(0,0,1), ma = -0.35), n = 200)
+ts.plot(masim8, col=4)
+
+
+adf.test(arsim1)
+kpss.test(arsim1)
+
+par(mfrow= c(1,2))
+plot(acf(arsim1))
+plot(acf(arsim2))
+
+#############################################################################
+### ARMA(1,1)
+
+library(fpp)
+
+library(readxl)
+ventas <- read_excel("F://clases//time-series//topics//data//arma1.xlsx")
+ventas.ts <-ts(ventas)
+adf.test(ventas.ts)
+acf(ventas.ts)
+
+arma <- diff(ventas.ts)
+summary(armam1 <- arma(arma, order = c(1, 0)))
+summary(armam2 <- arma(arma, order = c(2, 0)))
+summary(armam3 <- arma(arma, order = c(0, 1)))
+summary(armam4 <- arma(arma, order = c(0, 2)))
+summary(armam5 <- arma(arma, order = c(1, 1)))
+plot(armam)
+##############################################################################
+###ARIMA estacionalidad.
+
+library(readxl)
+estacional1 <- read_excel("D://clases//time-series//topics//data//arima_est2.xlsx")
+
+estacional1.ts <- ts(estacional1, start=c(2000, 1), frequency=4)
+plot(estacional1.ts, ylab="Ventas trimestrales", xlab="Periodo", col="blue")
+par(mfrow=c(1,2))
+Acf(estacional1.ts, main="Función de autocorrelación")
+Pacf(estacional1.ts, main="Función de autocorrelación parcial")
+#Los resultados no muestran estacionariedad, con algún grado de estacionalidad. 
+#Estimamos una primeras diferencias. 
+
+tsdisplay(diff(estacional1.ts, 4))
+
+#Recurrimos a un segundo proceso de diferenciación
+tsdisplay(diff(diff(estacional1.ts, 4)))
+
+#Una vez "estacionaria" la serie, procedemos a estimar un modelo ARIMA
+#El aumento en el retraso 1 en el PACF sugiere un componente no estacional MA (1), 
+#y el incremento en el retraso 4 en el ACF sugiere un componente estacional MA (1).
+#Modelo ARIMA (0,1,1) (0,1,1)4
+
+estimado1 <- Arima(estacional1.ts, order= c(0,1,1), seasonal= c(0,1,1))
+tsdisplay(residuals(estimado1))
+#Se encuentran picos en los retarsos 2 y "3". 
+
+#Se prueba la inclusión de un modelo ARIMA(0,1,2) (0,1,1)4
+#Se prueba la inclusión de un modelo ARIMA(0,1,3) (0,1,1)4
+#Modelo ARIMA (0,1,3) (0,1,1)4
+estimado2 <- Arima(estacional1.ts, order= c(0,1,2), seasonal= c(0,1,1))
+residuos2 <- residuals(estimado2)
+tsdisplay(residuos2)
+summary(estimado2)
+#Modelo ARIMA (0,1,3) (0,1,1)4
+estimado3 <- Arima(estacional1.ts, order= c(0,1,3), seasonal= c(0,1,1))
+residuos3 <- residuals(estimado3)
+tsdisplay(residuos3)
+summary(estimado3)
+
+#Prueba de residuos
+Box.test(residuos3, lag=16, fitdf=4, type="Ljung")
+
+#Graficamos y requerimos los valores de los pronósticos
+plot(forecast(estimado3, h=20))
+summary(forecast(estimado3, h=20))
+
+#Probamos con la función auto.arima
+auto.arima(estacional1.ts)
+#Observamos que el modelo estimado por la función auto.arima supera en el AICc o BIC
+#al modelo estimado ARIMA (0,1,3) (0,1,1).
+#Optamos por restringir la función auto.arima truncando la opción stepwise
+
+estimado.auto<- auto.arima(estacional1.ts,
+                           stepwise=FALSE, approximation=FALSE)
+summary(estimado.auto)
+plot(forecast(estimado.auto))
+summary(forecast(estimado.auto, h=20))
+
+#########################################################################################################
+###ARIMA estacionalidad. Ejemplo 2.
+
+library(readxl)
+estacional <- read_excel("D://clases//time-series//topics//data//arima_est3.xlsx")
+
+estacional.ts <- ts(estacional, start=c(2000, 1), frequency=12)
+plot(estacional.ts, col="99")
+l.estacional.ts <- log(estacional.ts)
+
+windows()
+par(mfrow=c(2,1))
+plot(estacional.ts, ylab="Ventas de mazapanes (millones)", xlab="Periodo", col="10")
+plot(l.estacional.ts, ylab="Log ventas de mazapanes", xlab="Periodo", col="3")
+
+#Se emplean diferencias
+tsdisplay(diff(estacional.ts, 12),
+          main="Ventas estacionalmente diferenciadas", xlab="Periodo")
+
+tsdisplay(diff(diff(estacional.ts, 12),
+               main="Ventas estacionalmente diferenciadas", xlab="Periodo"))
+#library(ggplot2)
+
+#Mejor estimación entre 7 modelos
+estimado1 <- Arima(estacional.ts, order=c(3,0,0), seasonal=c(2,1,0), lambda=0)
+summary(estimado1)
+
+estimado2 <- Arima(estacional.ts, order=c(3,0,1), seasonal=c(2,1,0), lambda=0)
+summary(estimado2)
+
+estimado3 <- Arima(estacional.ts, order=c(3,0,2), seasonal=c(2,1,0), lambda=0)
+summary(estimado3)
+
+estimado4 <- Arima(estacional.ts, order=c(3,0,1), seasonal=c(1,1,0), lambda=0)
+summary(estimado4)
+
+estimado5 <- Arima(estacional.ts, order=c(3,0,1), seasonal=c(0,1,1), lambda=0)
+summary(estimado5)
+
+estimado6 <- Arima(estacional.ts, order=c(3,0,1), seasonal=c(0,1,2), lambda=0)
+summary(estimado6)
+
+estimado7 <- Arima(estacional.ts, order=c(3,0,1), seasonal=c(1,1,1), lambda=0)
+summary(estimado7)
+
+tsdisplay(residuals(estimado6))
+Box.test(residuals(estimado6), lag=36, fitdf=6, type="Ljung")
+
+#Probamos el ajuste con la función auto.arima
+estimado.auto1<- auto.arima(estacional.ts,
+                            stepwise=FALSE, approximation=FALSE)
+plot(forecast(estimado.auto1))
+summary(estimado.auto1)
+
+tsdisplay(residuals(estimado.auto1))
+Box.test(residuals(estimado.auto1), lag=36, fitdf=6, type="Ljung")
+
+#Probamos el ajuste de un modelo más complejo.
+#El modelo incluye límites a los procesos de diferenciación (d=0) y otra (D=1)
+estimado.auto2<- auto.arima(estacional.ts, lambda=0, d=0, D=1, max.order=9,
+                            stepwise=FALSE, approximation=FALSE)
+tsdisplay(residuals(estimado.auto2))
+Box.test(residuals(estimado.auto2), lag=36, fitdf=8, type="Ljung")
+
+#Pronósticos
+plot(forecast(estimado.auto2), ylab="Mazapanes", xlab="Periodo")
+summary(estimado.auto2)
+summary(forecast(estimado.auto2))
+##################################################
+install.packages("readxl") #Instalamos paquete para poder leer un archivo en formato xlsx
+require(readxl)
+install.packages("forecast") #Instalamos paquete que es útil para hacer pronósticos
+require(forecast)
+inpc<-read_excel("C://Users//admin//Downloads//INPC.xlsx") #Se pone la dirección en donde esta ubicado el archivo
+inpc1<-ts(inpc$INPC,frequency =12, start = c(1982,1)) #Se hacen los datos una serie de tiempo e indicamos que es mensual y desde que año y mes comienza
+inpc1sub<-ts(inpc$SUBYA,frequency =12, start = c(1982,1))
+inpc1nosub<-ts(inpc$NOSUBYA,frequency =12, start = c(1982,1))
+View(inpc1)
+plot(inpcd$random, xlab = "Año", ylab= "Variaciòn", main = "Variacion")#Realizamos esta grafica para observar el comportamiento aleatorio 
+plot(inpc1, xlab="Año", ylab="INPC", main="Serie de Tiempo del Indice Nacional de Precios al Consumidor: 1982-2017",
+     sub="Fuente: Elaboración propia con datos de INEGI", ylim=c(0,135), xlim=c(1982,2017), type="l",font.main=4,
+     axes=TRUE, ann=TRUE,lty=1,  col="green", lwd=3) #graficamos nuestra serie principal y damos formato
+lines(inpc1sub, col="red", lty=2,  lwd=3) #Agregamos las lineas del INPC SUBYACENTE
+lines(inpc1nosub, col="purple",lty=3, lwd=3) #Agregamos las lineas del INPC  NO SUBYACENTE
+legend(x=1982,y=135,c("INPC","INPC-SUB","INPC-NOSUB"), cex=0.8, bty="n", col=c("green","red","purple"), lty=1:3) #Agregamos una leyenda 
+
+
+#Descomposicion de la serie inpc
+inpcd<-decompose(inpc1,"multiplicative") #Escogimos el metodo multiplicativo porque se observo un crecimiento exponencial
+cycle(inpc1)  
+boxplot(inpc1~cycle(inpc1))  
+inpcst <- stl(inpc1, s.window = "periodic", robust = TRUE)
+plot(inpcst$time.series, main = "Gráfico 6. Componentes de la serie")
+summary(inpcst)
+
+#Descomposicion de la serie inpc sub
+inpcdsub<-decompose(inpc1sub,"multiplicative")
+cycle(inpc1sub) 
+boxplot(inpc1sub~cycle(inpc1sub))  
+
+#Descomposicion de la serie inpc no sub
+inpcdnosub<-decompose(inpc1nosub,"multiplicative")
+cycle(inpc1nosub) 
+boxplot(inpc1nosub~cycle(inpc1sub))  
+
+
+## para encontrar estadisticos de estacionariedad
+install.packages("tseries")   
+require(tseries)
+
+acf(inpc1, lag=20, plot=FALSE) #lag para obtener los primeros 20 retrasos
+acf(inpc1, plot=TRUE)
+inpc1.log<- log(inpc1) #haciendo logaritmica nuestra serie de tiempo
+#####  Kpss  #####
+
+kpss.test(inpc1.log)
+##un valor menor a .05 indica que NO es estacionario
+##con kpss.test nos da p-value= 0.01 < 0.05 por lo que la serie no es estacionaria
+
+##### t de Dickey-Fuller aumentada ####
+
+adf.test(inpc1.log, alternative = "stationary")
+## un valor menor a .05 indica que es estacionario
+##El estadistico Dickey fuller nos da un p-value de 0.3196>0.05 por lo que no es estacionaria.
+
+
+########     Pronósticos     ########
+##  Método del Ingenuo (Naive Method)  
+naive(inpc1,h=12)
+
+##  Método de Deriva (Drift Method) 
+rwf(inpc1,h=12,drift=TRUE)
+
+##  Método de la Media (Average Method) 
+meanf(inpc1,h=12)
+
+
+x11()
+par(mfrow= c(3,1))
+plot(naive(inpc1), col="green", main= "Pronósticos método Naive" ,sub="INPC", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(rwf(inpc1), col="green",main= "Pronósticos método de la deriva" ,sub="INPC", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(meanf(inpc1),col="green",main= "Pronósticos método de la media" ,sub="INPC", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(naive(inpc1sub), col="red",main= "Pronósticos método Naive" ,sub="INPC-SUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(rwf(inpc1sub), col="red",main= "Pronósticos método de la deriva" ,sub="INPC-SUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(meanf(inpc1sub),col="red",main= "Pronósticos método de la media" ,sub="INPC-SUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(naive(inpc1nosub), col="purple",main= "Pronósticos método Naive" , sub="INPC-NOSUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(rwf(inpc1nosub), col="purple",main= "Pronósticos método de la deriva" , sub="INPC-NOSUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+plot(meanf(inpc1nosub),col="purple",main= "Pronósticos método de la media" , sub="INPC-NOSUB", ylim=c(0,135), xlim=c(1982,2017),xlab="Año", ylab="INPC")
+
+##  Holt: exponenciado doble
+##  Método propicio para pronosticar datos con tendencia pero sin estacionalidad.
+##  Aplicamos este método por que como pudimos ver nuestra serie temporal tiende tendencia
+##  pero no estacionalidad 
+par(mfrow= c(1,3))
+#### Holt para INPC
+inpc1h <- holt(inpc1, h=12)
+# Resultados:
+inpc1h$model$state
+plot(inpc1h, type="l", ylab="Suavizado Método de Holt", xlab="Año", main="Gráfico 10. INPC: Pronósticos por Método Holt", 
+     plot.conf=FALSE, sub="Fuente: Elaboración propia, usando datos de INEGI",ylim=c(0,135),
+     xlim=c(1982,2018), lwd=2, col="green")
+lines(fitted(inpc1h), col="black")
+lines(inpc1h$mean, col="blue", type="l")
+legend("topleft", lty=1, col=c("green","black","blue"), bty="n",
+       c("Observados","Holt's suavizado de tendencia 1","Pronóstico a 1 año"), cex=.8)
+summary(inpc1h)
+
+#### Holt para INPC-SUB
+inpc2h <- holt(inpc1sub, h=12)
+# Resultados:
+inpc2h$model$state
+plot(inpc2h, type="l", ylab="Suavizado Método de Holt", xlab="Año", main="Gráfico 11.INPC-SUB: Pronósticos por Método Holt", 
+     plot.conf=FALSE, sub="Fuente: Elaboración propia, usando datos de INEGI",ylim=c(0,135),
+     xlim=c(1982,2018), lwd=2, col="red")
+lines(fitted(inpc2h), col="black")
+lines(inpc2h$mean, col="blue", type="l")
+legend("topleft", lty=1, col=c("red","black","blue"), bty="n",
+       c("Observados","Holt's suavizado de tendencia 1","Pronóstico a 1 año"), cex=.8)
+summary(inpc2h)
+
+#### Holt para INPC-NOSUB
+inpc3h <- holt(inpc1nosub, h=12)
+# Resultados:
+inpc3h$model$state
+plot(inpc3h, type="l", ylab="Suavizado Método de Holt", xlab="Año", main="Gráfico 12.INPC-NOSUB: Pronósticos por Método Holt", 
+     plot.conf=FALSE, sub="Fuente: Elaboración propia, usando datos de INEGI",ylim=c(0,135),
+     xlim=c(1982,2018), lwd=2, col="purple")
+lines(fitted(inpc3h), col="black")
+lines(inpc3h$mean, col="blue", type="l")
+legend("topleft", lty=1, col=c("purple","black","blue"), bty="n",
+       c("Observados","Holt's suavizado de tendencia 1","Pronóstico a 1 año"), cex=.8)
+summary(inpc3h)
+
